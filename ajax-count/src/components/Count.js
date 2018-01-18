@@ -12,24 +12,22 @@ const container ={
 	margin: '10px',
 }
 
+var Loader = require('react-loader');
+
 const mapStateToProps = (state) => ({
 	count: state.count,
+	isLoadComplete: state.isLoadComplete,
 });
 
 const mapDispatchToProps = (dispatch) => ({
 	initCount: () => {
 		fetch(URL, {method: 'get'})
 		.then(function(response) {
-			//處理 response
-			//fetch在只要在伺服器有回應的情況下，都會回傳已實現的Promise物件狀態(只要不是網路連線問題，
-			//或是伺服器失連等等)，在這其中也會包含狀態碼為錯誤碼(404, 500...)的情況，
-			//所以在使用時你還需要加一下檢查:
-			//ok 代表狀態碼在範圍 200-299
 			if (!response.ok) throw new Error(response.statusText)	
 			var jsonPromise =  response.json();
 			jsonPromise.then(item => {
 				dispatch(dispatchInitCount({ 
-					count: item.count,
+					count: item.count,			
 				}))
 			})
 		}).catch(function(err) {
@@ -40,6 +38,7 @@ const mapDispatchToProps = (dispatch) => ({
 });
 
 class Count extends Component {
+
 	componentDidMount() {
 		this.props.initCount();
 	}
@@ -47,13 +46,16 @@ class Count extends Component {
 	render() {
 		const {
 			count,
+			isLoadComplete,
 		} = this.props
 		
 		return (
 			<div style={container}>
-				<SubBtn />
-				<input style={{textAlign: 'center'}} value={count} />
-				<AddBtn />
+				<Loader loaded={isLoadComplete}>
+					<SubBtn />
+					<div style={{display: 'inline-block', margin: '30px'}}>{count}</div>
+					<AddBtn />
+				</Loader>
 			</div>
 		);
 	}

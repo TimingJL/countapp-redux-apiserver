@@ -1,24 +1,32 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { dispatchAddCount } from './action'
+import { dispatchAddCount, dispatchSetSpin } from './action'
 import {
 	URL,
 } from './constants';
 
-const mapStateToProps = (state) => ({
+function sleep(milliseconds) {
+  var start = new Date().getTime();
+  for (var i = 0; i < 1e7; i++) {
+    if ((new Date().getTime() - start) > milliseconds){
+      break;
+    }
+  }
+}
 
+const mapStateToProps = (state) => ({
+	isLoadComplete: state.isLoadComplete,
 })
 
 const mapDispatchToProps = (dispatch) => ({
 	Add: (event) => {
+		dispatch(dispatchSetSpin({ 
+
+		}))
 		fetch(URL + '/add', {method: 'put'})
 		.then(function(response) {
-			//處理 response
-			//fetch在只要在伺服器有回應的情況下，都會回傳已實現的Promise物件狀態(只要不是網路連線問題，
-			//或是伺服器失連等等)，在這其中也會包含狀態碼為錯誤碼(404, 500...)的情況，
-			//所以在使用時你還需要加一下檢查:
-			//ok 代表狀態碼在範圍 200-299
-			if (!response.ok) throw new Error(response.statusText)	
+			if (!response.ok) throw new Error(response.statusText)
+			sleep(1000);
 			var jsonPromise =  response.json();
 			jsonPromise.then(item => {
 				dispatch(dispatchAddCount({ 

@@ -2,6 +2,7 @@ import {
 	ADD_COUNT,
 	SUB_COUNT,
 	INIT_COUNT,
+	SET_SPIN,
 } from './constants';
 
 export const dispatchAddCount = (payload) => ({
@@ -16,5 +17,10 @@ export const dispatchSubCount = (payload) => ({
 
 export const dispatchInitCount = (payload) => ({
 	type: INIT_COUNT,
+	payload,
+});
+
+export const dispatchSetSpin = (payload) => ({
+	type: SET_SPIN,
 	payload,
 });
